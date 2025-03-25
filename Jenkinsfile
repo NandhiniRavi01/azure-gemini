@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PYTHON_VERSION = "3.10"
-        AZURE_API_URL = "http://your-azure-api-url/detect"  // Replace with your actual API URL
+        AZURE_API_URL = "https://myfunctionappname1.azurewebsites.net/api/monitoring?"  // Replace with your actual API URL
     }
 
     stages {

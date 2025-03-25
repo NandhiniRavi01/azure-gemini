@@ -1,4 +1,6 @@
 flask
 google-generativeai
 pandas
+scikit-learn
+joblib
 

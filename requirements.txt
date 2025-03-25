@@ -3,4 +3,5 @@ google-generativeai
 pandas
 scikit-learn
 joblib
-
+psutil
+python-dotenv

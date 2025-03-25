@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Setup Environment') {
+        stage('Setup Virtual Environment') {
             steps {
                 script {
                     sh '''
@@ -10,9 +10,17 @@ pipeline {
                     if [ ! -d "venv" ]; then
                         python3 -m venv venv
                     fi
-                    . venv/bin/activate  # Activate venv
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Activate Virtual Environment & Install Dependencies') {
+            steps {
+                script {
+                    sh '''
+                    cd /var/lib/jenkins/workspace/azure-cicd
+                    /bin/bash -c "source venv/bin/activate && pip install -r requirements.txt"
                     '''
                 }
             }
@@ -22,9 +30,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    . venv/bin/activate  # Ensure venv is activated
-                    rm -f anomaly_detector.pkl scaler.pkl  # Remove old models
-                    python train_anomaly_model.py
+                    cd /var/lib/jenkins/workspace/azure-cicd
+                    /bin/bash -c "source venv/bin/activate && python train_anomaly_model.py"
                     '''
                 }
             }
@@ -34,10 +41,11 @@ pipeline {
             steps {
                 script {
                     sh '''
+                    cd /var/lib/jenkins/workspace/azure-cicd
                     if [ -f anomaly_detector.pkl ] && [ -f scaler.pkl ]; then
                         echo "✅ Model files exist!"
                     else
-                        echo "❌ Model files not found!"
+                        echo "❌ Model files missing!"
                         exit 1
                     fi
                     '''

@@ -11,17 +11,16 @@ pipeline {
             steps {
                 script {
                     sh 'python3 -m venv venv'
-                    sh '. venv/bin/activate && pip install -r requirements.txt'
+                    sh 'venv/bin/pip install --upgrade pip'
+                    sh 'venv/bin/pip install -r requirements.txt'
                 }
             }
         }
 
-        
-
         stage('Run Optimize Pipeline') {
             steps {
                 script {
-                    sh '. venv/bin/activate && python optimize_pipeline.py'
+                    sh 'venv/bin/python optimize_pipeline.py'
                 }
             }
         }
@@ -29,18 +28,19 @@ pipeline {
         stage('Train Anomaly Detection Model') {
             steps {
                 script {
-                    sh '. venv/bin/activate && python train_anomaly_model.py'
+                    sh 'venv/bin/python train_anomaly_model.py'
                 }
             }
         }
 
-
         stage('Verify Model Files') {
             steps {
                 script {
-                    def modelExists = sh(script: 'ls -l anomaly_detector.pkl scaler.pkl', returnStatus: true)
+                    def modelExists = sh(script: 'test -f anomaly_detector.pkl && test -f scaler.pkl', returnStatus: true)
                     if (modelExists != 0) {
                         error("🚨 Model files are missing! Please check training stage.")
+                    } else {
+                        echo "✅ Model files exist!"
                     }
                 }
             }
@@ -49,7 +49,7 @@ pipeline {
         stage('Run DevOps AI Workflow') {
             steps {
                 script {
-                    sh '. venv/bin/activate && python devops_ai.py'
+                    sh 'venv/bin/python devops_ai.py'
                 }
             }
         }
@@ -57,14 +57,14 @@ pipeline {
         stage('Send Logs to Azure Monitoring') {
             steps {
                 script {
-                    def logs = sh(script: 'cat jenkins.log', returnStdout: true).trim()
+                    def logs = sh(script: 'cat jenkins.log | base64', returnStdout: true).trim()
                     def response = sh(script: """
                         curl -X POST "$AZURE_API_URL" \
                         -H "Content-Type: application/json" \
                         -d '{"logs": "${logs}"}'
                     """, returnStdout: true).trim()
                     
-                    echo "Azure Monitoring Response: ${response}"
+                    echo "📡 Azure Monitoring Response: ${response}"
                 }
             }
         }
@@ -72,7 +72,9 @@ pipeline {
 
     post {
         always {
-            sh '. venv/bin/activate && deactivate || true'
+            script {
+                sh 'rm -rf venv' // Clean up virtual environment
+            }
         }
     }
 }

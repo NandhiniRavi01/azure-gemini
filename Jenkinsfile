@@ -16,6 +16,8 @@ pipeline {
             }
         }
 
+        
+
         stage('Run Optimize Pipeline') {
             steps {
                 script {
@@ -28,6 +30,18 @@ pipeline {
             steps {
                 script {
                     sh '. venv/bin/activate && python train_anomaly_model.py'
+                }
+            }
+        }
+
+
+        stage('Verify Model Files') {
+            steps {
+                script {
+                    def modelExists = sh(script: 'ls -l anomaly_detector.pkl scaler.pkl', returnStatus: true)
+                    if (modelExists != 0) {
+                        error("🚨 Model files are missing! Please check training stage.")
+                    }
                 }
             }
         }

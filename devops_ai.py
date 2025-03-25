@@ -13,7 +13,7 @@ def analyze_logs(log_data):
     """Send logs to Google Gemini AI for analysis and get suggested fixes."""
     prompt = f"Analyze the following DevOps log and suggest a fix: {log_data}"
     
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-1.5-pro-latest")
     response = model.generate_content(prompt)
     
     return response.text if response.text else "No suggestions available."

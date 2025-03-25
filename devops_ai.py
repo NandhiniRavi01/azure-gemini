@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # 🔹 Replace with your Google Gemini API Key
-GENAI_API_KEY = "your_gemini_api_key"
+GENAI_API_KEY = "AIzaSyCrU3oSpbTid4fAJNoFN948ROPjoqy_WvI"
 
 # 🔹 Configure Gemini API
 genai.configure(api_key=GENAI_API_KEY)

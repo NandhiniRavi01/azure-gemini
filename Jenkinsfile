@@ -3,17 +3,15 @@ pipeline {
 
     environment {
         PYTHON_VERSION = "3.10"
-        AZURE_API_URL = "https://myfunctionappname1.azurewebsites.net/api/monitoring?"  // Replace with your actual API URL
+        AZURE_API_URL = "https://myfunctionappname1.azurewebsites.net/api/monitoring"
     }
 
     stages {
-       
-
         stage('Setup Python Environment') {
             steps {
                 script {
                     sh 'python3 -m venv venv'
-                    sh 'source venv/bin/activate && pip install -r requirements.txt'
+                    sh '. venv/bin/activate && pip install -r requirements.txt'
                 }
             }
         }
@@ -21,7 +19,7 @@ pipeline {
         stage('Run Optimize Pipeline') {
             steps {
                 script {
-                    sh 'source venv/bin/activate && python optimize_pipeline.py'
+                    sh '. venv/bin/activate && python optimize_pipeline.py'
                 }
             }
         }
@@ -29,7 +27,7 @@ pipeline {
         stage('Train Anomaly Detection Model') {
             steps {
                 script {
-                    sh 'source venv/bin/activate && python train_anomaly_model.py'
+                    sh '. venv/bin/activate && python train_anomaly_model.py'
                 }
             }
         }
@@ -37,7 +35,7 @@ pipeline {
         stage('Run DevOps AI Workflow') {
             steps {
                 script {
-                    sh 'source venv/bin/activate && python devops_ai.py'
+                    sh '. venv/bin/activate && python devops_ai.py'
                 }
             }
         }
@@ -60,8 +58,7 @@ pipeline {
 
     post {
         always {
-            sh 'deactivate'
+            sh '. venv/bin/activate && deactivate || true'
         }
     }
 }
-

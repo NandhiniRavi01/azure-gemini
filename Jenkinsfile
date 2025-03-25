@@ -7,8 +7,11 @@ pipeline {
                 script {
                     sh '''
                     cd /var/lib/jenkins/workspace/azure-cicd
-                    python3 -m venv venv
-                    . venv/bin/activate  # Use "." instead of "source"
+                    if [ ! -d "venv" ]; then
+                        python3 -m venv venv
+                    fi
+                    . venv/bin/activate  # Activate venv
+                    pip install --upgrade pip
                     pip install -r requirements.txt
                     '''
                 }
@@ -19,7 +22,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    . venv/bin/activate  # Activate venv
+                    . venv/bin/activate  # Ensure venv is activated
                     rm -f anomaly_detector.pkl scaler.pkl  # Remove old models
                     python train_anomaly_model.py
                     '''

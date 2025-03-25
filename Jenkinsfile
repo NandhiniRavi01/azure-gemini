@@ -7,11 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: 'https://github.com/your-repo.git' // Replace with your Git repo
-            }
-        }
+       
 
         stage('Setup Python Environment') {
             steps {

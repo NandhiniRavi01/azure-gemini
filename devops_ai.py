@@ -18,6 +18,11 @@ def analyze_logs(log_data):
     
     return response.text if response.text else "No suggestions available."
 
+@app.route("/", methods=["GET"])
+def home():
+    """Home route to verify API is running."""
+    return jsonify({"message": "DevOps AI API is running!"}), 200
+
 @app.route('/jenkins-webhook', methods=['POST'])
 def receive_jenkins_logs():
     """Receives logs from Jenkins and returns AI-generated solutions."""
@@ -28,5 +33,4 @@ def receive_jenkins_logs():
     return jsonify({"error": "No logs received"}), 400
 
 if __name__ == "__main__":
-    app.run(port=5005)
-
+    app.run(host="0.0.0.0", port=5005, debug=True)

@@ -10,7 +10,7 @@ def optimize_pipeline(job_history):
     """Use AI to suggest CI/CD optimizations for Jenkins."""
     prompt = f"Analyze the following Jenkins job history and suggest optimizations: {job_history}"
     
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-1.5-pro-latest")
     response = model.generate_content(prompt)
     
     return response.text if response.text else "No optimizations available."

@@ -58,7 +58,7 @@ pipeline {
             }
         }
 
-         stage('Train Anomaly Detection Model') {
+         stage('Train and again run Anomaly Detection Model') {
             steps {
                 dir("$WORKSPACE_DIR") {
                     script {
